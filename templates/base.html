@@ -1,0 +1,53 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B2A57">
+<title>{% block title %}{{ empresa }}{% endblock %} · Cobros</title>
+<link rel="icon" href="{% static 'kred/icono.png' %}">
+<link rel="apple-touch-icon" href="{% static 'kred/icono.png' %}">
+<link rel="manifest" href="{% static 'kred/manifest.json' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'kred/kred.css' %}">
+</head>
+<body>
+{% with u=request.resolver_match.url_name %}
+{% if user.is_authenticated %}
+<header class="top">
+  <div class="top-in">
+    <a href="{% url 'dashboard' %}"><img class="logo" src="{% static 'kred/logo.png' %}" alt="{{ empresa }} — {{ lema }}"></a>
+    <nav class="nav" aria-label="Principal">
+      {% if rol != "Gestor" %}<a href="{% url 'dashboard' %}" class="{% if u == 'dashboard' %}on{% endif %}">Panel</a>{% endif %}
+      <a href="{% url 'ruta' %}" class="{% if u == 'ruta' %}on{% endif %}">Ruta de cobro</a>
+      <a href="{% url 'clientes' %}" class="{% if u == 'clientes' or u == 'cliente_detalle' %}on{% endif %}">Clientes</a>
+      <a href="{% url 'creditos' %}" class="{% if u == 'creditos' or u == 'credito_detalle' %}on{% endif %}">Cartera</a>
+      {% if rol != "Gestor" %}<a href="{% url 'reportes' %}" class="{% if u == 'reportes' %}on{% endif %}">Reportes</a>{% endif %}
+      {% if rol == "Administrador" or rol == "Gerente" %}<a href="{% url 'bitacora' %}" class="{% if u == 'bitacora' %}on{% endif %}">Bitácora</a>{% endif %}
+    </nav>
+    <div class="user">
+      <div class="who"><div style="font-weight:700">{{ user.get_full_name|default:user.username }}</div>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="linkbtn">{{ rol }} · Salir</button></form></div>
+      <div class="avatar" aria-hidden="true">{{ user.username|first|upper }}</div>
+    </div>
+  </div>
+</header>
+{% endif %}
+<main>
+{% for m in messages %}<div class="msg {{ m.tags }}" role="status">{{ m }}</div>{% endfor %}
+{% block content %}{% endblock %}
+</main>
+{% if user.is_authenticated %}
+<nav class="tabbar" aria-label="Secciones" style="--tabs:{% if rol == 'Gestor' %}4{% else %}5{% endif %}">
+  {% if rol != "Gestor" %}<a href="{% url 'dashboard' %}" class="{% if u == 'dashboard' %}on{% endif %}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Panel</a>{% endif %}
+  <a href="{% url 'ruta' %}" class="{% if u == 'ruta' %}on{% endif %}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 20l-5.4-2.7A1 1 0 0 1 3 16.4V4.6a1 1 0 0 1 1.4-.9L9 6m0 14l6-3m-6 3V6m6 11l4.6 2.3a1 1 0 0 0 1.4-.9V7.6a1 1 0 0 0-.6-.9L15 4m0 13V4m0 0L9 6"/></svg>Ruta</a>
+  <a href="{% url 'clientes' %}" class="{% if u == 'clientes' or u == 'cliente_detalle' %}on{% endif %}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Clientes</a>
+  <a href="{% url 'creditos' %}" class="{% if u == 'creditos' or u == 'credito_detalle' %}on{% endif %}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>Cartera</a>
+  {% if rol == "Gestor" %}<a href="{% url 'agenda_ics' %}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda</a>
+  {% else %}<a href="{% url 'reportes' %}" class="{% if u == 'reportes' %}on{% endif %}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Reportes</a>{% endif %}
+</nav>
+{% endif %}
+{% endwith %}
+</body>
+</html>

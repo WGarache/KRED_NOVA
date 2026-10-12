@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}{{ titulo }}{% endblock %}{% block content %}
+<div class="head"><div><div class="eyebrow">Clientes</div><h1>{{ titulo }}</h1></div></div>
+<form method="post" class="card f" {% if multipart %}enctype="multipart/form-data"{% endif %}>{% csrf_token %}
+  <div class="fgrid">{% for f in form %}<p><label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}{% if f.help_text %}<span class="helptext">{{ f.help_text }}</span>{% endif %}{{ f.errors }}</p>{% endfor %}</div>
+  <div class="actions"><button class="btn gold">Guardar</button><a class="btn ghost" href="javascript:history.back()">Cancelar</a></div>
+</form>
+{% endblock %}

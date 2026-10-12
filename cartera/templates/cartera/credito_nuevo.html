@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% load humanize %}{% block title %}Nuevo crédito{% endblock %}{% block content %}
+<div class="head"><div><div class="eyebrow">{{ cliente.codigo }} · {{ cliente.nombre_completo }}</div><h1>Nuevo crédito</h1></div></div>
+<form method="post" class="card f">{% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="fgrid">
+    <div class="sect">Condiciones</div>
+    {% for f in form %}{% if f.name == "fiador_nombre" %}<div class="sect">Fiador</div>{% endif %}{% if f.name == "destino" %}<div class="sect">Otros datos</div>{% endif %}
+    <p><label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}{% if f.help_text %}<span class="helptext">{{ f.help_text }}</span>{% endif %}{{ f.errors }}</p>{% endfor %}
+  </div>
+  <div class="actions"><button class="btn ghost" name="simular">Calcular plan de pagos</button>
+    {% if plan %}<button class="btn gold" name="confirmar" onclick="return confirm('¿Confirmar el desembolso de este crédito?')">Confirmar desembolso</button>{% endif %}</div>
+</form>
+{% if plan %}
+<div class="grid">
+  <div class="kpi dark"><div class="l">Cuota</div><div class="v">C$ {{ plan.cuota|floatformat:2|intcomma }}</div><div class="s">{{ plan.n }} cuotas</div></div>
+  <div class="kpi"><div class="l">Interés total</div><div class="v">C$ {{ plan.interes|floatformat:2|intcomma }}</div></div>
+  <div class="kpi"><div class="l">Total a pagar</div><div class="v">C$ {{ plan.total|floatformat:2|intcomma }}</div><div class="s">Última cuota: {{ plan.ultima|date:"d/m/Y" }}</div></div>
+</div>
+<section class="card"><h2>Plan de pagos</h2><div class="tw" style="max-height:420px;overflow:auto"><table>
+  <thead><tr><th>#</th><th>Fecha</th><th class="n">Capital</th><th class="n">Interés</th><th class="n">Cuota</th></tr></thead>
+  <tbody>{% for p in plan.cuotas %}<tr><td>{{ p.numero }}</td><td>{{ p.fecha|date:"D d/m/Y" }}</td><td class="n">{{ p.capital|floatformat:2|intcomma }}</td><td class="n">{{ p.interes|floatformat:2|intcomma }}</td><td class="n"><strong>{{ p.total|floatformat:2|intcomma }}</strong></td></tr>{% endfor %}</tbody>
+</table></div></section>
+{% endif %}
+{% endblock %}

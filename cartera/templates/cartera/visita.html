@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Registrar visita{% endblock %}{% block content %}
+<div class="head"><div><div class="eyebrow">{{ c.numero }}</div><h1>Visita sin cobro</h1><div class="muted">{{ c.cliente.nombre_completo }}</div></div></div>
+<form method="post" class="card f" style="max-width:520px">{% csrf_token %}
+  {% for f in form %}<p><label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}{{ f.errors }}</p>{% endfor %}
+  <div class="actions"><button class="btn gold">Guardar visita</button><a class="btn ghost" href="{% url 'ruta' %}">Cancelar</a></div>
+</form>
+{% endblock %}

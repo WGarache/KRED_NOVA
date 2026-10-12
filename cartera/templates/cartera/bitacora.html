@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Bitácora{% endblock %}{% block content %}
+<div class="head"><div><div class="eyebrow">Auditoría</div><h1>Bitácora</h1></div></div>
+<div class="card tw"><table><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Detalle</th></tr></thead><tbody>
+{% for b in registros %}<tr><td>{{ b.fecha|date:"d/m/Y H:i" }}</td><td>{{ b.usuario|default:"—" }}</td><td>{{ b.accion }}</td><td style="white-space:normal">{{ b.detalle }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

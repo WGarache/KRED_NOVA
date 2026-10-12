@@ -1,0 +1,9 @@
+{
+  "name": "Kred Nova · Cobros",
+  "short_name": "Kred Nova",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B2A57",
+  "icons": [{"src": "/static/kred/icono.png", "sizes": "512x512", "type": "image/png"}]
+}
